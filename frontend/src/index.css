@@ -64,6 +64,7 @@ height: 100vh;
 .header-section {
 padding: 0px 10px;
 background-color: #fff;
+border-bottom: 1px solid #b2666c;
 }
 .headerLeft{
   z-index: 99;
@@ -83,16 +84,24 @@ display: none;
 .headerRight, .headerRight li, .mobileHeader ul {
 display: inline-block; 
 list-style: none; 
+padding: 0.5em 1em;
+}
+.headerRight li.active a, .headerRight li a:hover {
+  color: #b2666c !important;
+  padding-bottom: 5px;
+}
+.headerRight li.active a {
+  border-bottom: 2px solid #b2666c;
 }
 .headerRight li a, .mobileHeader a {
-padding: 0.5em 1em;
 font-weight: 500;
 transition: 0.1s linear;
 margin: 0 0.1em;
 align-content: center;
 display: flex;  
 color: #000000;    
-text-decoration: none;          
+text-decoration: none;      
+font-family: "MediumBricolageGrotesque";    
 }
 .headerRight li a span{
 vertical-align: middle;

@@ -117,23 +117,11 @@ function ProductDetails() {
                                         )}
                                     </Grid>
                                     <Grid size={{ xs:12, sm:12, md: 12, lg: 12}}>
-                                        <ButtonSec className="button button-primary d-inline-block my-0" onClick={() => handleClick("", "cart")}>
-                                            {cartLoader ? (
-                                                <div className="spinner-border text-light" role="status">
-                                                    <span className="visually-hidden">Loading...</span>
-                                                </div>
-                                            ) : (
-                                                <a data-bs-toggle="offcanvas" href="#cartPage" role="button" aria-controls="cartPage">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" className="bi bi-cart me-2 align-text-bottom" viewBox="0 0 16 16">
-                                                    <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5M3.102 4l1.313 7h8.17l1.313-7zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4m7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4m-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2m7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2"/>
-                                                    </svg>
-                                                    Add To Cart
-                                                </a>
-                                            )}
-                                        </ButtonSec>
+                                        <div className="d-inline-block w-100 my-0" onClick={() => handleClick("", "cart")}>
+                                            <CartList />
+                                        </div>
                                     </Grid>
                                 </Grid>
-                                <CartList />
                             </div>
                             <div className="quantSec">
                                 <P bigFt className="border-bottom pb-2 mt-3">Product Details</P>

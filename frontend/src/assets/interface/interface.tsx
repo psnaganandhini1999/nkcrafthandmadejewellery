@@ -1,6 +1,7 @@
 export interface H1Inter {
     bigFt?: Boolean
     smFt?: Boolean
+    clrBrn?: Boolean
 }
 
 export interface H2Inter {
@@ -20,6 +21,7 @@ export interface H5Inter {
     smFt?: Boolean
     smFt1?: Boolean
     clrWht?: Boolean
+    clrBrn?: Boolean
 }
 
 export interface PInter {
