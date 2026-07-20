@@ -47,6 +47,9 @@ export default createGlobalStyle`
     .vh-100 {
       height: 100vh;
     }
+    .h-650px {
+      height: 650px;
+    }
  `
 export const H1 = styled.h1<H1Inter>`
   ${(props: H1Inter) => props.bigFt &&
@@ -216,8 +219,13 @@ export const BannerSection = styled.div<BannerSectionInter>`
   & .bannerImg {
     position: relative;
     .bgimg  {
+      &.h-650px {
+        height: 650px;
+      }
+      &.h-550px {
+        height: 550px;
+      }
       width: 100%;
-      height: 550px;
       object-fit: cover;
       object-position: center;
       border-bottom: 1px solid #f9d5ac;
@@ -253,6 +261,7 @@ export const BannerSection = styled.div<BannerSectionInter>`
       color: ${black};
       width: 40%;
       & .inputField {
+        position: relative;
         input, textarea {
           border: 1px solid #d7d7d7;
           padding: 5px 10px;
@@ -262,6 +271,12 @@ export const BannerSection = styled.div<BannerSectionInter>`
         }
         label {
           font-weight: 500;
+        }
+        .eyeIcon {
+          position: absolute;
+          right: 10px;
+          top: 50%;
+          cursor: pointer;
         }
       }
       .detailsSec {
@@ -547,6 +562,9 @@ export const HeaderMainSec = styled.div`
     .headerRight, .mobileMenu {
       .services, .product {
         position: relative;
+      }
+      a {
+        color: ${black};
       }
       .headerSerSubMenu, .headerProSubMenu {
         display: none;
@@ -849,4 +867,24 @@ export const CheckoutListSec = styled.div`
     border: 1px solid #dcadad;
     border-radius: 10px;
   }
+`;
+
+const myAnimation = keyframes`
+  from {right: 0; opacity: 0;}
+  to {right: 30px; opacity: 1;}
+`;
+
+export const SuccessErrorSec = styled.div`
+  margin: 5px 0;
+  padding: 10px 0;
+  font-size: .9em;
+  color: ${lightGreen};
+  animation-duration: 1s;
+  animation-delay: 0.2s;
+  position: fixed;
+  width: 20%;
+  z-index: 1;
+  left: 10%;
+  top: 15%;
+  text-align: center;
 `;

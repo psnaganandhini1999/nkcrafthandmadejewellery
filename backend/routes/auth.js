@@ -1,79 +1,60 @@
 const express = require('express');
+const User = require('../models/User');
 const router = express.Router();
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+
+
+const generateToken = (user) => {
+  return jwt.sign(
+    { id: user._id, email: user.email, fullName: user.fullName, phoneNo: user.phoneNo },
+    process.env.JWT_SECRET  || 'fallback_secret',
+    { expiresIn: '30d' }
+  );
+};
 
 // SIGNUP
 router.post("/signup", async (req, res) => {
   try {
-    const {
-      name,
-      email,
-      phone,
-      password,
-      confirmPassword,
-    } = req.body;
+    console.log("Signup request received:", req.body); // Log the request body for debugging
+    const { fullName, email, phoneNo, password } = req.body;
 
-    if (
-      !name ||
-      !email ||
-      !phone ||
-      !password ||
-      !confirmPassword
-    ) {
+    if (!fullName || !email || !phoneNo || !password) {
       return res.status(400).json({
         success: false,
         message: "All fields are required",
       });
     }
 
-    if (password !== confirmPassword) {
-      return res.status(400).json({
-        success: false,
-        message: "Passwords do not match",
-      });
+    const userExists = await User.findOne({ email });
+    if (userExists) {
+      return res.status(400).json({ message: 'Email already exists' });
     }
-
-    const existingUser = await User.findOne({
-      $or: [{ email }, { phone }],
-    });
-
-    if (existingUser) {
-      return res.status(409).json({
-        success: false,
-        message: "Email or phone number already exists",
-      });
+    
+    const nameExists = await User.findOne({ fullName });
+    if (nameExists) {
+      return res.status(400).json({ message: 'FullName is already taken' });
     }
-
+    
     const hashedPassword = await bcrypt.hash(password, 10);
-
-    const user = await User.create({
-      name,
-      email,
-      phone,
-      password: hashedPassword,
-    });
-
-    const token = jwt.sign(
-      {
-        userId: user._id,
-      },
-      process.env.JWT_SECRET,
-      {
-        expiresIn: "7d",
-      }
-    );
+    const userData = {
+        fullName,
+        email,
+        phoneNo,
+        password: hashedPassword,
+    };
+    const user = await User.create(userData);
 
     res.status(201).json({
       success: true,
       message: "Signup successful",
-
       user: {
         id: user._id,
-        name: user.name,
+        fullName: user.fullName,
         email: user.email,
-        phone: user.phone,
+        phoneNo: user.phoneNo,
       },
-
-      token,
+      token: generateToken(user),
     });
   } catch (error) {
     res.status(500).json({
@@ -116,28 +97,15 @@ router.post("/login", async (req, res) => {
       });
     }
 
-    const token = jwt.sign(
-      {
-        userId: user._id,
-      },
-      process.env.JWT_SECRET,
-      {
-        expiresIn: "7d",
-      }
-    );
-
     res.status(200).json({
-      success: true,
-      message: "Login successful",
-
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        phone: user.phone,
-      },
-
-      token,
+        success: true,
+        message: "Login successfully.",
+        user: {
+            id: user._id,
+            name: user.name,
+            email: user.email,
+        },
+        token: generateToken(user),
     });
   } catch (error) {
     res.status(500).json({

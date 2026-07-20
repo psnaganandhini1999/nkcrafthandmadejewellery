@@ -7,17 +7,8 @@ router.post("/add", async (req, res) => {
     try {
         const { fullName, phoneNo, email, address, landmark, country, city, state, pincode, orderNotes } = req.body;
 
-        const data = await Orderdetails.create({
-            fullName,
-            phoneNo,
-            email,
-            address,
-            country,
-            state,
-            city,
-            landmark,
-            orderNotes
-        })
+        const orderData = {fullName, phoneNo, email, address, country, state, city, landmark,orderNotes }
+        const data = await Orderdetails.create(orderData);
         res.status(201).json({
             fullName: data.fullName,
             phoneNo: data.phoneNo,

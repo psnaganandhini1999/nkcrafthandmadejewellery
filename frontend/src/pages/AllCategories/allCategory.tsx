@@ -72,7 +72,7 @@ function AllCategories() {
                         })}
                     </Slider> */}
                     <div>
-                        <Img src={bgimg} alt="bannerImg" className="bgimg" />
+                        <Img src={bgimg} alt="bannerImg" className="bgimg h-550px" />
                     </div>
                     <div className="px-1 px-md-5">
                         {/* <H1 bigFt className="overlay-text px-1 px-md-5 mx-1 mx-md-5">Handmade <br/> <span>With Love</span></H1>

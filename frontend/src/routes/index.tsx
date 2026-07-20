@@ -17,8 +17,9 @@ import AllProducts from '../pages/AllProducts/allProducts';
 import AllCategories from '../pages/AllCategories/allCategory';
 import ProductDetails from '../pages/AllProducts/productDetails';
 import CheckoutList from '../pages/CheckoutList/checkoutList';
-import LoginSignup from '../pages/LoginSignup/loginSignup';
 import ForgotPassword from '../pages/LoginSignup/forgotpassword';
+import Login from '../pages/LoginSignup/login';
+import Signup from '../pages/LoginSignup/signup';
 // const Home = lazy(() => import('../pages/HomePage/home'));
 
 const RouterFile: React.FC = () => {
@@ -36,8 +37,8 @@ const RouterFile: React.FC = () => {
               <Route path="/product/:type" element={<AllProducts />} />
               <Route path="/product-details" element={<ProductDetails />} />
               <Route path="/checkout" element={<CheckoutList />} />
-              <Route path="/login" element={<LoginSignup />} />
-              <Route path="/signup" element={<LoginSignup />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
           </Routes>
         </Layout>

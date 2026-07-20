@@ -16,11 +16,13 @@ function HeaderMain() {
     const [ proOpen, setProOpen ]: any = useState(false);
     const [ activeTab, setActiveTab ] = useState("tab1");
     const [ activeSerTab, setActiveSerTab ] = useState("tab8");
-    const [ activeIndex, setActiveIndex ] = useState(0)
+    const [ activeIndex, setActiveIndex ] = useState(0);
+    const token = localStorage.getItem('token');
     const menu = [
         { name: "Home", path: "/" },
         { name: "Shop", path: "/product?type=all" },
-        { name: "Product", path: "",
+        { name: "Category", path: "/create-category" },
+        { name: "Product", path: "/create-product",
             icon: "bi bi-chevron-down",
             value: [
                 { name: "Binance Clone", path: "/binance-clone" },
@@ -260,6 +262,13 @@ function HeaderMain() {
         console.log("clicked");
         setIsOpen(!isOpen);
     }
+
+    const clearLocalStorage = () => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        window.location.reload();
+    }
+
     return (
         <HeaderMainSec>
         <div className='header-section'>
@@ -274,13 +283,13 @@ function HeaderMain() {
                 <Grid size={9} justifyContent={"center"} className="text-center">
                     <ul className="headerRight mb-0">
                     {menu.map((x, i) => {
-                        return <li key={i} className={`${(x.name === "Services") ? "services" : ""} ${(x.name === "Product") ? "product" : ""}${i === activeIndex ? "active" : ""}`} onMouseOver={() => handleChange(i, x.name)}>
+                        return <li key={i} className={`${(x.name === "Services") ? "services" : ""} ${(x.name === "Product") ? "product " : ""}${i === activeIndex ? "active" : ""}`} onMouseOver={() => handleChange(i, x.name)}>
                             {x.name === "Contact Us" ? (
-                                <div className="button button-primary">
+                                <div className="button button-primary" onClick={() => setActiveIndex(i)}>
                                     <a href="#contactus">Contact Us</a>
                                 </div>
                             ) : (
-                                <Link to={x?.path} className={`${(x.name === "Services") && "services"} ${(x.name === "Product") && "product"}`}>
+                                <Link to={x?.path} className={`${(x.name === "Services") && "services"} ${(x.name === "Product") && "product"}`} onClick={() => setActiveIndex(i)}>
                                     {x.name}
                                     <span><i className={x.icon}></i></span>
                                 </Link>
@@ -309,11 +318,22 @@ function HeaderMain() {
                 </Grid>
                 <Grid size={2} justifyContent={"end"} sx={{ textAlign: "right"}} className="headerRight pe-3">
                     <div className="d-flex align-items-center justify-content-end">
-                        <div>
-                            <Link to={"/login"} className="mx-2">
-                                Login/Signup
-                            </Link>
-                        </div>
+                        {token ? (
+                            <div className="d-flex align-items-center justify-content-end">
+                                <Link to={"/profile"} className="mx-2">
+                                    Profile
+                                </Link>
+                            </div>
+                        ) : (
+                            <div>
+                                <Link to={"/login"} className="mx-2">
+                                    Login
+                                </Link>
+                                 <Link to={"/signup"} className="mx-2">
+                                    Signup
+                                </Link>
+                            </div>
+                        )}
                         {subMenu?.map((d, j) => {
                             return <Link key={j} to={d.path} className="mx-2">
                                 <Img src={d.icon} alt="icons" className="size20px"/>
@@ -324,6 +344,13 @@ function HeaderMain() {
                                 <path fillRule="evenodd" d="M1.885.511a1.745 1.745 0 0 1 2.61.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.68.68 0 0 0 .178.643l2.457 2.457a.68.68 0 0 0 .644.178l2.189-.547a1.75 1.75 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.6 18.6 0 0 1-7.01-4.42 18.6 18.6 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877z"/>
                             </svg>
                         </ButtonSec>
+                        {token && (
+                            <div className="d-flex align-items-center justify-content-end">
+                                <ButtonSec onClick={() => clearLocalStorage()} className="button button-dark logout mx-2 py-1 px-3">
+                                    Logout
+                                </ButtonSec>
+                            </div>
+                        )}
                         {isOpen && 
                             <div className="contactList">
                                 <H2 smFt1 className="m-0">Let's Connect</H2>
