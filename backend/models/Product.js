@@ -9,14 +9,16 @@ const productSchema = new mongoose.Schema(
       required: true,
     },
     pdtDes: { type: String, required: true },
-    pdtPrice: { type: Number, required: true },
-    pdtDiscount: { type: Number, default: 0},
-    pdtStock: { type: Number, default: 0},
+    pdtPrice: { type: String, required: true },
+    pdtDiscount: { type: String, default: 0},
+    pdtSku: { type: String, default: 0},
+    pdtStock: { type: String, default: 0},
     pdtImages: [{ type: String }],
-    pdtColors: [{ type: String }],
+    pdtColors: { type: String },
     pdtSizes: [{ type: String }],
-    isFeatured: { type: Boolean, default: false},
-    pdtStatus: { type: Boolean, default: true},
+    pdtTags: [{ type: String }],
+    // isFeatured: { type: Boolean, default: false},
+    pdtStatus: { type: String, default: true},
   },{ timestamps: true});
 
 module.exports = mongoose.model("Product", productSchema);

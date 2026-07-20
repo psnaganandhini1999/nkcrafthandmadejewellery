@@ -2,15 +2,21 @@ const express = require('express');
 const router = express.Router();
 const Product = require('../models/Product');
 
-// CREATE CATEGORY
+// CREATE PRODUCT
 router.post("/create", async (req, res) => {
   try {
-    const { pdtName, pdtDes, pdtPrice, pdtDiscount, pdtStock, pdtImages, pdtColors, pdtSizes, pdtStatus } = req.body;
+    const { pdtName, category, pdtDes, pdtPrice, pdtDiscount, pdtSku, pdtStock, pdtImages, pdtColors, pdtSizes, pdtTags, pdtStatus } = req.body;
 
     if (!pdtName) {
       return res.status(400).json({
         success: false,
         message: "Product name is required",
+      });
+    }
+    if (!category) {
+      return res.status(400).json({
+        success: false,
+        message: "Category is required",
       });
     }
     if (!pdtDes) {
@@ -47,7 +53,7 @@ router.post("/create", async (req, res) => {
       });
     }
 
-    const pdtData = { pdtName, pdtDes, pdtPrice, pdtDiscount, pdtStock, pdtImages, pdtColors, pdtSizes, pdtStatus }
+    const pdtData = { pdtName, category, pdtDes, pdtPrice, pdtDiscount, pdtSku, pdtStock, pdtImages, pdtColors, pdtSizes, pdtTags, pdtStatus }
     const product =
       await Product.create(pdtData);
 
@@ -67,10 +73,28 @@ router.post("/create", async (req, res) => {
 // GET ALL PRODUCT
 router.get("/all", async (req, res) => {
   try {
+    const { search = "", status = "" } = req.query;
+    const query = {};
+
+    if (search.trim()) {
+      query.$or = [{
+        pdtName: {
+          $regex: search,
+          $options: "i",
+        }}
+      ];
+    }
+    if (status) {
+      query.pdtStatus = status;
+    }
+
     const products =
-      await Product.find().sort({
-        createdAt: -1,
-      });
+      await Product.find(query);
+
+    // Sort pets by plan priority first, then verified status
+    products.sort((a, b) => {
+      return new Date(b.createdAt) - new Date(a.createdAt);
+    });
 
     res.status(200).json({
       success: true,
@@ -107,10 +131,10 @@ router.delete("/delete/:id", async (req, res) => {
 router.put("/update/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const { pdtName, pdtDes, pdtPrice, pdtDiscount, pdtStock, pdtImages, pdtColors, pdtSizes, pdtStatus } = req.body;
+    const { pdtName, category, pdtDes, pdtPrice, pdtDiscount, pdtSku, pdtStock, pdtImages, pdtColors, pdtSizes, pdtTags, pdtStatus } = req.body;
     const product = await Product.findOneAndUpdate(
       { _id: id },
-      { pdtName, pdtDes, pdtPrice, pdtDiscount, pdtStock, pdtImages, pdtColors, pdtSizes, pdtStatus },
+      { pdtName, category, pdtDes, pdtPrice, pdtDiscount, pdtSku, pdtStock, pdtImages, pdtColors, pdtSizes, pdtTags, pdtStatus },
       { new: true }
     );
 
@@ -118,6 +142,12 @@ router.put("/update/:id", async (req, res) => {
       return res.status(400).json({
         success: false,
         message: "Product name is required",
+      });
+    }
+    if (!category) {
+      return res.status(400).json({
+        success: false,
+        message: "Category is required",
       });
     }
     if (!pdtDes) {
@@ -164,23 +194,25 @@ router.get("/:id", async (req, res) => {
     console.log(req.params);
     
     const { id } = req.params;
-    const product = await product.findById(id);
+    const product = await Product.findById(id);
     if (!product) {
       return res.status(404).json({
         success: false,
         message: "product not found",
       });
     }
-    const { pdtName, pdtDes, pdtPrice, pdtDiscount, pdtStock, pdtImages, pdtColors, pdtSizes, pdtStatus } = req.body;
     const data = {
       pdtName: product?.pdtName,
+      category: product?.category,
       pdtDes: product?.pdtDes,
       pdtPrice: product?.pdtPrice,
       pdtDiscount: product?.pdtDiscount,
+      pdtSku: product?.pdtSku,
       pdtStock: product?.pdtStock,
       pdtImages: product?.pdtImages,
       pdtColors: product?.pdtColors,
       pdtSizes: product?.pdtSizes,
+      pdtTags: product?.pdtTags,
       pdtStatus: product?.pdtStatus,
     }
     res.status(200).json({
