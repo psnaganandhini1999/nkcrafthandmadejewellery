@@ -17,11 +17,37 @@ import free from "../../assets/images/icons/freeshipping.png";
 import securepayment from "../../assets/images/icons/securepayment.png";
 import support from "../../assets/images/icons/support.png";
 import heart from "../../assets/images/icons/heart.png";
-import ItemsList from "../AllProducts/itemsList";
+// import ItemsList from "../AllProducts/itemsList";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { API, DOMAIN } from "../../helper/helper";
+import PaginatedItems from "../Pagination/pagination";
 // import Slider from "react-slick";
 
 function AllCategories() {
+    const [ categoriesList, setCategoriesList ] = useState([]);
     const navigate = useNavigate();
+    const params = {
+        search: "",
+        status: ""
+    }
+
+    useEffect(() => {
+        fetchGetAllCategories(params);
+    }, [])
+
+    const fetchGetAllCategories = async (params: any) => {
+        const token = localStorage.getItem('token');
+        const { data } = await axios.get(DOMAIN + API.GET_ALL_CATEGORY, {
+            params,
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        setCategoriesList(data?.categories);
+        console.log(data);
+    }
 
     const allCateList = [
         { catName: "Slik Thread Bangles", catDec: "", catImg: silkthreadbangle, path: "slikthreadbangles" },
@@ -104,8 +130,8 @@ function AllCategories() {
                     <Img src={heart} alt="img" className="size120pxauto" />
                 </div>
                 <Grid container spacing={2} className="banner-content">
-                    <ItemsList currentItems={allCateList} type="category" />
-                    {/* <PaginatedItems itemsPerPage={8} data={allCateList} type="category" /> */}
+                    {/* <ItemsList currentItems={categoriesList} type="category" /> */}
+                    <PaginatedItems itemsPerPage={10} data={categoriesList} type="category" />
                 </Grid>
             </div>
              <BoxSection className="box bg">

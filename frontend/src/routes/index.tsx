@@ -36,6 +36,7 @@ const RouterFile: React.FC = () => {
               <Route path="/product" element={<AllProducts />} />
               <Route path="/product/:type" element={<AllProducts />} />
               <Route path="/product-details" element={<ProductDetails />} />
+              <Route path="/product-details/:id" element={<ProductDetails />} />
               <Route path="/checkout" element={<CheckoutList />} />
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />

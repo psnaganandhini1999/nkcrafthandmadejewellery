@@ -119,7 +119,7 @@ function CheckoutList() {
                 orderNotes: formData.orderNotes,
            }
             try {
-                const { data } = await axios.post('http://localhost:4000/api/shipping-details-post', form_data);
+                const { data } = await axios.post('http://localhost:4000/api/order/add', form_data);
                 if (data) {
                     setFormLoading(false)
                     setFormData(initialContactData)

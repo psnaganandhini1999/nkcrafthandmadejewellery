@@ -12,4 +12,4 @@ const OrderDetailsSchema = new mongoose.Schema({
     orderNotes: { type: String, required: false },
 }, { timestamps: true });
 
-module.exports = mongoose.model("Orderdetails", OrderDetailsSchema);
+module.exports = mongoose.model("shippingdetails", OrderDetailsSchema);

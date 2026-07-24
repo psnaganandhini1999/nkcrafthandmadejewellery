@@ -769,13 +769,14 @@ export const AllCateProductsSec = styled.div`
 `;
 export const FooterSec = styled.div`
   & {
-    background-color: ${pink};
+    background-color: ${brown};
     // margin-top: 50px;
     padding: 50px;
   }
 `;
 
 export const ProductDetailsSec = styled.div`
+  background: ${white};
   & .breadcrumb {
     background-color: white;
     .breadcrumb-item {

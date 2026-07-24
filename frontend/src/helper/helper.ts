@@ -17,11 +17,14 @@ export const API = {
     STORE_DETAILS: "pets/store/",
     PAYMENT_CREATE_ORDER: "payment/create-order",
     PAYMENT_VERIFY: "payment/verify",
-    CREATE_CATEGORY: "/create-category",
-    GET_ALL_CATEGORY: "/get-all-category",
-    GET_CATEGORY_BY_ID: "/get-category-by-id/",
-    UPDATE_CATEGORY_BY_ID: "/update-category-by-id/",
-    DELETE_CATEGORY_BY_ID: "/delete-category-by-id/",
+    GET_ALL_CATEGORY: "category/all",
+    GET_CATEGORY_BY_ID: "category",
+    GET_ALL_PRODUCT: "product/all",
+    GET_PRODUCT_BY_ID: "product",
+    GET_ALL_CUSTOMER: "user/all",
+    GET_CUSTOMER_BY_ID: "user",
+    UPDATE_CUSTOMER_BY_ID: "user/update",
+    GET_ALL_ORDER: "order/all",
 }
 
 export const ADMIN_API = {

@@ -1,17 +1,63 @@
 import { Container, Grid } from "@mui/material";
 import { ButtonSec, H3, H5, Img, P, ProductDetailsSec } from "../../assets/css/styledcomponents";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import silkthreadbangle from "../../assets/images/category/silkthreadbangle.jpeg";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import InnerImageZoom from 'react-inner-image-zoom';
 import CartList from "../CartList/cartList";
+import axios from "axios";
+import { API, DOMAIN } from "../../helper/helper";
+import { getAllCategories } from "../AllCategories/getCategoriesData";
 
 function ProductDetails() {
     const [ minMaxCnt, setMinMaxCnt ] = useState(1);
     const [ cartLoader, setCartLoader ] = useState(false);
     const [ bangleSizeName, setBangleSizeName ] = useState("");
     const [ active, setActive ] = useState(false);
+    const [ productDetailsList, setProductDetailsList ]: any = useState([]);
+    const [ productSizes, setProductSizes ]: any = useState([]);
+    const [ productTags, setProductTags ]: any = useState([]);
 
+    const paramsData: any = useParams();
+    const [ id ]: any = useState(paramsData?.id || "")
+    // console.log(paramsData?.id);
+    const params = {
+        search: "",
+        status: ""
+    }
+    
+    useEffect(() => {
+        if (id !== "") {
+            getFetchEditData();
+        }
+    }, [id])
+
+    const getFetchEditData = async () => {
+        const { data } = await axios.get(`${DOMAIN + API.GET_PRODUCT_BY_ID + "/" + id}`, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+        });
+        console.log(data?.data);
+        if (data?.success) {
+            const [categoryResponse] =
+            await Promise.all([
+                getAllCategories(params),
+            ]);
+
+            const products = data?.data;
+            const categories = categoryResponse.filter((cat: any) => cat._id === products?.category);
+            const pdtData = {
+                ...products,
+                category: categories[0]?.catName
+            }
+            console.log(data?.data, categories);
+            setProductDetailsList(pdtData);
+            setProductSizes(pdtData?.pdtSizes);
+            setProductTags(pdtData?.pdtTags);
+        }
+    }
     const productsDetailsList = { pdtName: "Slik Thread Bangles", pdtPrice: "₹520", pdtImg: silkthreadbangle, catName: "Slik Thread Bangles" }
     const bandlesSize = [
         { name: "1.10", size: "1.10" },
@@ -48,7 +94,7 @@ function ProductDetails() {
         <ProductDetailsSec>
             <Container>
                 <nav aria-label="breadcrumb">
-                    <ol className="breadcrumb mt-3">
+                    <ol className="breadcrumb pt-3">
                         <li className="breadcrumb-item">
                             <Link to="/">Home</Link>
                             <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" className="bi bi-chevron-right" viewBox="0 0 16 16">
@@ -68,19 +114,32 @@ function ProductDetails() {
                     <Grid container spacing={2} className="" justifyContent={"space-between"} alignItems={"start"}>
                         <Grid size={{ xs:12, sm: 12, md: 6, lg: 6}}>
                             <div className="pdtImageSec">
-                                <InnerImageZoom src={productsDetailsList.pdtImg} zoomSrc={productsDetailsList.pdtImg} />
-                                {/* <Img src={productsDetailsList.pdtImg} alt="silkthreadbangle" className="size100percent" /> */}
+                                <InnerImageZoom src={silkthreadbangle} zoomSrc={productDetailsList.pdtImg} />
+                                {/* <Img src={productDetailsList.pdtImg} alt="silkthreadbangle" className="size100percent" /> */}
                             </div>
                         </Grid>
                         <Grid size={{ xs:12, sm: 12, md: 6, lg: 6}}>
-                            <H5 smFt>Category: {productsDetailsList.catName}</H5>
-                            <H3 bigFt>{productsDetailsList.pdtName}</H3>
-                            <P smFt className="border px-3 py-1 d-inline-block fw-bold:">In Stock</P>
-                            <H3 bigFt>{productsDetailsList.pdtPrice}</H3>
+                            <div className="d-flex align-items-center">
+                                <H5 smFt>Category: {productDetailsList.category}</H5>
+                            </div>
+                            <div className="pb-3">
+                                <span className="me-2" style={{color: "rgb(245, 158, 11)"}}>★★★★☆</span>
+                                 (25 Reviews)
+                            </div>
+                            <H3 bigFt className="">{productDetailsList.pdtName}</H3>
+                            <H3 bigFt>{"₹" +productDetailsList.pdtPrice}</H3>
+                            <P smFt className="m-0 d-inline-block fw-bold text-success">
+                                {productDetailsList.pdtStock > 0 ? "In Stock" : "Out of stock"}
+                            </P>
+                            <div className="quantSec border-bottom pb-3 mb-3">
+                                {/* <P bigFt className="border-bottom pb-2 mt-3">Product Details</P> */}
+                                <P smFt className="d-inline-block my-0">{productDetailsList?.pdtDes}</P>
+                            </div>
+                            <H5 smFt>Color: {productDetailsList.pdtColors}</H5>
                             <div className="sizeSec">
                                 <P bigFt>Select size</P>
                                  <ul>
-                                    {bandlesSize && bandlesSize?.map((item, i) => {
+                                    {productSizes && productSizes?.map((item: any, i: any) => {
                                         return <li key={i} onClick={() => handleClick(i, "banSize",)}>
                                             {/* {(item.name === "Customize" && productsDetailsList?.catName === "Slik Thread Bangles")
                                              ? <P smFt className={`${(Number(bangleSizeName) === i) ? "size" : "" } border px-3 py-1`}>
@@ -91,7 +150,7 @@ function ProductDetails() {
                                             </P>
                                             } */}
                                            <P smFt className={`${(Number(bangleSizeName) === i) ? "size" : "" } border px-3 py-1`}>
-                                                {item.size}
+                                                {item}
                                             </P>
                                         </li>
                                     })}
@@ -117,15 +176,11 @@ function ProductDetails() {
                                         )}
                                     </Grid>
                                     <Grid size={{ xs:12, sm:12, md: 12, lg: 12}}>
-                                        <div className="d-inline-block w-100 my-0" onClick={() => handleClick("", "cart")}>
+                                        <div className="d-inline-block w-100 my-0 mb-4" onClick={() => handleClick("", "cart")}>
                                             <CartList />
                                         </div>
                                     </Grid>
                                 </Grid>
-                            </div>
-                            <div className="quantSec">
-                                <P bigFt className="border-bottom pb-2 mt-3">Product Details</P>
-                                <P smFt className="d-inline-block my-0">Slik Thread Bangles available in sizes 1.10, 1.12, 1.14, 1.18, 2.0, 2.2, 2.4, 2.6 and 2.8 in most alluring colours.  </P>
                             </div>
                         </Grid>
                     </Grid>

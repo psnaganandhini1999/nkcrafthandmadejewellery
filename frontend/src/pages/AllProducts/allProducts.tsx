@@ -8,29 +8,58 @@ import silkthreadjhumka from "../../assets/images/category/silkthreadjhumka.jpeg
 import kundanstud from "../../assets/images/category/kundanstud.jpeg";
 import kundanhairband from "../../assets/images/category/kundanhairband.jpeg";
 import centerclip from "../../assets/images/category/centerclip.jpeg";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import axios from "axios";
+import { API, DOMAIN } from "../../helper/helper";
+import { getAllCategories } from "../AllCategories/getCategoriesData";
 
 function AllProducts() {
     const [column, setColumn] = useState(2);
     const navigate = useNavigate();
     const [ queryParams ] = useSearchParams();
     const [range, setRange] = useState({ min: 0, max: 100 });
-    const allProductsList = [
-        { pdtName: "Slik Thread Bangles", pdtPrice: "₹520", pdtImg: silkthreadbangle, catName: "Slik Thread Bangles" },
-        { pdtName: "Slik Thread Bangles", pdtPrice: "₹520", pdtImg: silkthreadbangle, catName: "Slik Thread Bangles" },
-        { pdtName: "Slik Thread Bangles", pdtPrice: "₹520", pdtImg: silkthreadbangle, catName: "Slik Thread Bangles" },
-        { pdtName: "Slik Thread Bangles", pdtPrice: "₹520", pdtImg: silkthreadbangle, catName: "Slik Thread Bangles" },
-        { pdtName: "Slik Thread Bangles", pdtPrice: "₹520", pdtImg: silkthreadbangle, catName: "Slik Thread Bangles" },
-        { pdtName: "Glass Bangles", pdtPrice: "₹120", pdtImg: glassbangle, catName: "Glass Bangles" },
-        { pdtName: "Slik Thread Jhumkas", pdtPrice: "₹120", pdtImg: silkthreadjhumka, catName: "Slik Thread Jhumkas" },
-        { pdtName: "Kundan Studs", pdtPrice: "₹120", pdtImg: kundanstud, catName: "Kundan Studs" },
-        { pdtName: "Kundan Hair Bands", pdtPrice: "₹120", pdtImg: kundanhairband, catName: "Kundan Hair Bands" },
-        { pdtName: "Center Clips", pdtPrice: "₹120", pdtImg: centerclip, catName: "Center Clips", },
-        { pdtName: "test", pdtPrice: "₹120", pdtImg: productImage },
-        { pdtName: "test", pdtPrice: "₹120", pdtImg: productImage },
-        { pdtName: "test", pdtPrice: "₹120", pdtImg: productImage },
-    ]
+    const [ productsList, setProductsList ] = useState([]);
+    const [ allCategories, setAllCategories ] = useState([]);
+    const [ catIdData, setCatIdData ]: any = useState("");
+    const params = {
+        search: "",
+        status: ""
+    }
+    useEffect(() => {
+        console.log(queryParams.get("type"));
+        const catId = queryParams?.get("type");
+        setCatIdData(catId);
+        fetchGetAllProducts(params);
+    }, [queryParams])
+
+    const fetchGetAllProducts = async (params: any) => {
+        const token = localStorage.getItem('token');
+        const { data } = await axios.get(DOMAIN + API.GET_ALL_PRODUCT, {
+            params,
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        if (data?.products !== "[]" || data?.products !== undefined) {
+            const [categoryResponse] =
+            await Promise.all([
+                getAllCategories(params),
+            ]);
+
+            const products = data?.products;
+            const catId = queryParams?.get("type");
+            const categories = categoryResponse.filter((cat: any) => cat._id === catId);
+            setAllCategories(categoryResponse);
+            const pdtData = products.filter((pdt: any) => pdt?.category === categories[0]._id);
+            console.log(pdtData, categories, "catData",products, categoryResponse, queryParams.get("type"));
+            setProductsList(pdtData);
+        } else {
+            setProductsList([]);
+        }
+        // console.log(data);
+    }
 
     const handleClick = (columnType: any, catType: any) => {
         if (catType === "category") {
@@ -90,7 +119,7 @@ function AllProducts() {
                                         </h2>
                                         <div id="panelsStayOpen-collapseOne" className="accordion-collapse collapse show">
                                             <div className="accordion-body pt-0">
-                                                {allProductsList && allProductsList.map((item: any, i: any) => {
+                                                {allCategories && allCategories.map((item: any, i: any) => {
                                                     return <div className="" onClick={() => handleClick(item.path, "category")} key={i}>
                                                         <H3 smFt1>{item.catName}</H3>
                                                     </div>
@@ -208,7 +237,7 @@ function AllProducts() {
                     </Grid>
                 </Grid>
                 <Grid container spacing={2} className="banner-content">
-                    <PaginatedItems itemsPerPage={12} data={allProductsList} type="product" column={column}/>
+                    <PaginatedItems itemsPerPage={12} data={productsList} type="product" column={column}/>
                 </Grid>
             </div>
         </AllCateProductsSec>

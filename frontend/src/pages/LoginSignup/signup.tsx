@@ -70,6 +70,7 @@ function Signup() {
                 email: formData.email,
                 phoneNo: formData.phoneNo,
                 password: formData.password,
+                status: "Active"
             }
             try {
                 const { data } = await axios.post(DOMAIN + API.SIGNUP, form_data);
@@ -81,6 +82,7 @@ function Signup() {
                     setSuccessMsgCtn(data?.message);
                     setTimeout(() => {
                         setSuccessMsgCtn("");
+                        navigate("/login");
                     }, 1500);
                 }
             } catch (err: any) {
