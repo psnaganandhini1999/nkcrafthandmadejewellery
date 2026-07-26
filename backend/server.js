@@ -4,7 +4,9 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const path = require("path");
 const http = require("http");
-require("dotenv").config;
+require("dotenv").config();
+// console.log(process.env);
+
 const Shippinddetails = require("./models/Orderdetails");
 const Cart = require("./models/Cart");
 
@@ -24,12 +26,13 @@ app.use("/api/order", require("./routes/order"));
 app.use("/api/user", require("./routes/user"));
 app.use("/api/category", require("./routes/category"));
 app.use("/api/product", require("./routes/product"));
+app.use("/api/upload", require("./routes/upload"));
 
 
 // MongoDb Connection
 mongoose.connect(process.env.MONGO_URI || "mongodb://localhost:27017/nkcraft", {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
+    // useNewUrlParser: true,
+    // useUnifiedTopology: true
 })
 .then(() => console.log("MongoDB Connected..."))
 .catch(err => console.error("MongoDB Connection error:", err));

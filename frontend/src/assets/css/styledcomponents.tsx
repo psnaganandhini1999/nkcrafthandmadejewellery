@@ -808,10 +808,10 @@ export const ProductDetailsSec = styled.div`
         margin: 0 20px 0 0;
         cursor: pointer;
         p:hover, p.size {
-          border: 1px solid ${pink} !important;
+          border: 1px solid ${brown} !important;
         }
         p.size {
-          color: ${pink}
+          color: ${brown}
         }
       }
     }
@@ -831,11 +831,19 @@ export const ProductDetailsSec = styled.div`
         }
       }
     }
+    & .button-dark {
+      padding: 10px 24px;
+      border-radius: 5px !important;
+      background-color: ${brown};
+      border: 1px solid ${brown};
+      color: ${white};
+      text-decoration: none;
+    } 
   }
 `;
 
 export const CartListSec = styled.div`
-  & .offcanvas-body {
+  & .cart {
     height: 500px;
     max-height: 500px;
     overflow-y: scroll;

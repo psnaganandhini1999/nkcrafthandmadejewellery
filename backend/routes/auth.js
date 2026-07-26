@@ -3,6 +3,7 @@ const User = require('../models/User');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const AdminUser = require('../models/AdminUser');
 
 
 const generateToken = (user) => {
@@ -103,6 +104,37 @@ router.post("/login", async (req, res) => {
         user: {
             id: user._id,
             name: user.name,
+            email: user.email,
+        },
+        token: generateToken(user),
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+});
+
+// LOGIN
+router.post("/admin/login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({
+        success: false,
+        message: "Email and password are required",
+      });
+    }
+
+    const user = await AdminUser.findOne({ email });
+
+    res.status(200).json({
+        success: true,
+        message: "Login successfully.",
+        user: {
+            id: user._id,
             email: user.email,
         },
         token: generateToken(user),

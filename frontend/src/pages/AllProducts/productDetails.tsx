@@ -1,4 +1,4 @@
-import { Container, Grid } from "@mui/material";
+import { Button, Container, Drawer, Grid } from "@mui/material";
 import { ButtonSec, H3, H5, Img, P, ProductDetailsSec } from "../../assets/css/styledcomponents";
 import { Link, useParams } from "react-router-dom";
 import silkthreadbangle from "../../assets/images/category/silkthreadbangle.jpeg";
@@ -12,12 +12,11 @@ import { getAllCategories } from "../AllCategories/getCategoriesData";
 function ProductDetails() {
     const [ minMaxCnt, setMinMaxCnt ] = useState(1);
     const [ cartLoader, setCartLoader ] = useState(false);
-    const [ bangleSizeName, setBangleSizeName ] = useState("");
+    const [ bangleSizeName, setBangleSizeName ] = useState(-1);
     const [ active, setActive ] = useState(false);
     const [ productDetailsList, setProductDetailsList ]: any = useState([]);
     const [ productSizes, setProductSizes ]: any = useState([]);
     const [ productTags, setProductTags ]: any = useState([]);
-
     const paramsData: any = useParams();
     const [ id ]: any = useState(paramsData?.id || "")
     // console.log(paramsData?.id);
@@ -25,6 +24,10 @@ function ProductDetails() {
         search: "",
         status: ""
     }
+    const token = localStorage.getItem('token');
+    const [ selectedSizes, SetSelectedSizes ]: any = useState([]);
+    const [open, setOpen] = useState(false);
+
     
     useEffect(() => {
         if (id !== "") {
@@ -36,7 +39,7 @@ function ProductDetails() {
         const { data } = await axios.get(`${DOMAIN + API.GET_PRODUCT_BY_ID + "/" + id}`, {
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
+                'Authorization': `Bearer ${token}`
             }
         });
         console.log(data?.data);
@@ -58,6 +61,23 @@ function ProductDetails() {
             setProductTags(pdtData?.pdtTags);
         }
     }
+
+    useEffect(() => {
+        fetchGetAllCartData();
+    }, [])
+
+    const fetchGetAllCartData = async () => {
+        const token = localStorage.getItem('token');
+        const { data } = await axios.get(DOMAIN + API.GET_ALL_CART, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        // setCategoriesList(data?.categories);
+        console.log(data, "fetchGetAllCartData");
+    }
+
     const productsDetailsList = { pdtName: "Slik Thread Bangles", pdtPrice: "₹520", pdtImg: silkthreadbangle, catName: "Slik Thread Bangles" }
     const bandlesSize = [
         { name: "1.10", size: "1.10" },
@@ -71,7 +91,7 @@ function ProductDetails() {
         { name: "2.8", size: "2.8" },
     ]
 
-    const handleClick = (data: any, type: any) => {
+    const handleClick = (data: any, type: any, index: any) => {
         if (type === "minus") {
             console.log(data);
             if (minMaxCnt > 1) {
@@ -80,15 +100,44 @@ function ProductDetails() {
         } else if (type === "plus") {
             setMinMaxCnt(minMaxCnt + data)
         } else if (type === "cart") {
-            setCartLoader(true);
-            setTimeout(() =>{
-                setCartLoader(false);
-            }, 500)
+            addToCartList();
         } else if (type === "banSize") {
-            setBangleSizeName(data);
+            setBangleSizeName(index);
             setActive(!active);
+            console.log(data, type);
+            SetSelectedSizes(data);
         }
     }
+
+    const addToCartList = async () => {
+        // const user: any = localStorage.getItem("user");
+        // const UserData = JSON.parse(user);
+        const formData = {
+            // userId: UserData?._id,
+            productId: id,
+            // name: productDetailsList?.pdtName,
+            // image: productDetailsList?.pdtImages[0],
+            // price: productDetailsList?.pdtPrice,
+            quantity: minMaxCnt,
+            // sizes: selectedSizes
+        }
+        console.log(formData);
+        const { data } = await axios.post(`${DOMAIN + API.ADD_TO_CART}`, formData, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        console.log(data);
+        if (data) {
+            setOpen(true);
+        }
+        
+    }
+
+    const toggleDrawer = (newOpen: boolean) => () => {
+        setOpen(newOpen);
+    };
 
     return (
         <ProductDetailsSec>
@@ -140,7 +189,7 @@ function ProductDetails() {
                                 <P bigFt>Select size</P>
                                  <ul>
                                     {productSizes && productSizes?.map((item: any, i: any) => {
-                                        return <li key={i} onClick={() => handleClick(i, "banSize",)}>
+                                        return <li key={i} onClick={() => handleClick(item, "banSize", i)}>
                                             {/* {(item.name === "Customize" && productsDetailsList?.catName === "Slik Thread Bangles")
                                              ? <P smFt className={`${(Number(bangleSizeName) === i) ? "size" : "" } border px-3 py-1`}>
                                                 ""
@@ -168,18 +217,24 @@ function ProductDetails() {
                                             <div className="mb-3">
                                                 <P bigFt className="mt-0">Quantity</P>
                                                 <div className="border px-1 pb-1 me-3 d-inline-block">
-                                                    <span className="d-inline-block px-3 fs-5" onClick={() => handleClick(1, "minus")}>-</span>
+                                                    <span className="d-inline-block px-3 fs-5" onClick={() => handleClick(1, "minus", "")}>-</span>
                                                         <P smFt className="d-inline-block my-0">{minMaxCnt}</P>
-                                                    <span className="d-inline-block px-3 fs-4" onClick={() => handleClick(1, "plus")}>+</span>
+                                                    <span className="d-inline-block px-3 fs-4" onClick={() => handleClick(1, "plus", "")}>+</span>
                                                 </div>
                                             </div>
                                         )}
                                     </Grid>
                                     <Grid size={{ xs:12, sm:12, md: 12, lg: 12}}>
-                                        <div className="d-inline-block w-100 my-0 mb-4" onClick={() => handleClick("", "cart")}>
-                                            <CartList />
+                                        <div className="d-inline-block w-100 my-0 mb-4" onClick={() => handleClick("", "cart", "")}>
+                                             <a className="button button-dark w-100 d-inline-block text-center">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" className="bi bi-cart me-2 align-text-bottom" viewBox="0 0 16 16">
+                                                <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5M3.102 4l1.313 7h8.17l1.313-7zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4m7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4m-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2m7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2"/>
+                                                </svg>
+                                                Add To Cart
+                                            </a>
                                         </div>
                                     </Grid>
+                                    <CartList open={open} toggleDrawer={toggleDrawer} />
                                 </Grid>
                             </div>
                         </Grid>

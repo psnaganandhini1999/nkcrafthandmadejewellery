@@ -5,7 +5,7 @@ const Product = require('../models/Product');
 // CREATE PRODUCT
 router.post("/create", async (req, res) => {
   try {
-    const { pdtName, category, pdtDes, pdtPrice, pdtDiscount, pdtSku, pdtStock, pdtImages, pdtColors, pdtSizes, pdtTags, pdtStatus } = req.body;
+    const { pdtName, category, pdtDes, pdtDiscount, pdtStock, pdtImages, pdtColors, pdtTags, pdtStatus, metaData } = req.body;
 
     if (!pdtName) {
       return res.status(400).json({
@@ -25,12 +25,6 @@ router.post("/create", async (req, res) => {
         message: "Product description is required",
       });
     }
-    if (!pdtPrice) {
-      return res.status(400).json({
-        success: false,
-        message: "Product price is required",
-      });
-    }
     if (!pdtImages) {
       return res.status(400).json({
         success: false,
@@ -43,17 +37,17 @@ router.post("/create", async (req, res) => {
         message: "Product status is required",
       });
     }
-    const existingCategory =
-      await Product.findOne({ pdtName });
+    // const existingProduct =
+    //   await Product.findOne({ pdtName });
 
-    if (existingCategory) {
-      return res.status(409).json({
-        success: false,
-        message: "Producy already exists",
-      });
-    }
+    // if (existingProduct) {
+    //   return res.status(409).json({
+    //     success: false,
+    //     message: "Producy already exists",
+    //   });
+    // }
 
-    const pdtData = { pdtName, category, pdtDes, pdtPrice, pdtDiscount, pdtSku, pdtStock, pdtImages, pdtColors, pdtSizes, pdtTags, pdtStatus }
+    const pdtData = { pdtName, category, pdtDes, metaData, pdtDiscount, pdtStock, pdtImages, pdtColors, pdtTags, pdtStatus }
     const product =
       await Product.create(pdtData);
 
@@ -131,10 +125,10 @@ router.delete("/delete/:id", async (req, res) => {
 router.put("/update/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const { pdtName, category, pdtDes, pdtPrice, pdtDiscount, pdtSku, pdtStock, pdtImages, pdtColors, pdtSizes, pdtTags, pdtStatus } = req.body;
+    const { pdtName, category, pdtDes, metaData, pdtImages, pdtColors, pdtTags, pdtStatus } = req.body;
     const product = await Product.findOneAndUpdate(
       { _id: id },
-      { pdtName, category, pdtDes, pdtPrice, pdtDiscount, pdtSku, pdtStock, pdtImages, pdtColors, pdtSizes, pdtTags, pdtStatus },
+      { pdtName, category, pdtDes, metaData, pdtImages, pdtColors, pdtTags, pdtStatus },
       { new: true }
     );
 
@@ -156,12 +150,6 @@ router.put("/update/:id", async (req, res) => {
         message: "Product description is required",
       });
     }
-    if (!pdtPrice) {
-      return res.status(400).json({
-        success: false,
-        message: "Product price is required",
-      });
-    }
     if (!pdtImages) {
       return res.status(400).json({
         success: false,
@@ -177,7 +165,7 @@ router.put("/update/:id", async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: "Category Updated successfully",
+      message: "Product Updated successfully",
       data: product,
     });
   } catch (error) {
@@ -205,13 +193,9 @@ router.get("/:id", async (req, res) => {
       pdtName: product?.pdtName,
       category: product?.category,
       pdtDes: product?.pdtDes,
-      pdtPrice: product?.pdtPrice,
-      pdtDiscount: product?.pdtDiscount,
-      pdtSku: product?.pdtSku,
-      pdtStock: product?.pdtStock,
+      metaData: product.metaData,
       pdtImages: product?.pdtImages,
       pdtColors: product?.pdtColors,
-      pdtSizes: product?.pdtSizes,
       pdtTags: product?.pdtTags,
       pdtStatus: product?.pdtStatus,
     }

@@ -49,18 +49,18 @@ function AllCategories() {
         console.log(data);
     }
 
-    const allCateList = [
-        { catName: "Slik Thread Bangles", catDec: "", catImg: silkthreadbangle, path: "slikthreadbangles" },
-        { catName: "Glass Bangles", catDec: "", catImg: glassbangle, path: "glassbangles" },
-        { catName: "Slik Thread Jhumkas", catDec: "", catImg: silkthreadjhumka, path: "slikthreadjhumkas" },
-        { catName: "Kundan Studs", catDec: "", catImg: kundanstud, path: "kundanstuds" },
-        { catName: "Kundan Hair Bands", catDec: "", catImg: kundanhairband, path: "kundanhairbands" },
-        { catName: "Center Clips", catDec: "", catImg: centerclip, path: "centerclips" },
-        // { catName: "Hair Pins", catDec: "", catImg: productImage },
-        // { catName: "Kids Hair Bands", catDec: "", catImg: productImage },
-        // { catName: "test", catDec: "", catImg: productImage },
-        // { catName: "test", catDec: "", catImg: productImage },
-    ]
+    // const allCateList = [
+    //     { catName: "Slik Thread Bangles", catDec: "", catImg: silkthreadbangle, path: "slikthreadbangles" },
+    //     { catName: "Glass Bangles", catDec: "", catImg: glassbangle, path: "glassbangles" },
+    //     { catName: "Slik Thread Jhumkas", catDec: "", catImg: silkthreadjhumka, path: "slikthreadjhumkas" },
+    //     { catName: "Kundan Studs", catDec: "", catImg: kundanstud, path: "kundanstuds" },
+    //     { catName: "Kundan Hair Bands", catDec: "", catImg: kundanhairband, path: "kundanhairbands" },
+    //     { catName: "Center Clips", catDec: "", catImg: centerclip, path: "centerclips" },
+    //     // { catName: "Hair Pins", catDec: "", catImg: productImage },
+    //     // { catName: "Kids Hair Bands", catDec: "", catImg: productImage },
+    //     // { catName: "test", catDec: "", catImg: productImage },
+    //     // { catName: "test", catDec: "", catImg: productImage },
+    // ]
     
     const allSupportList = [
         { name: "Handmade", surName: "With Love", catImg: handmade },

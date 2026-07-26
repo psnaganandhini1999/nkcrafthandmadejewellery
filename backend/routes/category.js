@@ -62,7 +62,9 @@ router.post("/create", async (req, res) => {
 router.get("/all", async (req, res) => {
   try {
     const { search = "", status = "" } = req.query;
-    const query = {};
+    const query = {
+      catStatus: "Active",
+    };
 
     if (search.trim()) {
       query.$or = [{
@@ -81,7 +83,7 @@ router.get("/all", async (req, res) => {
 
     // Sort pets by plan priority first, then verified status
     categories.sort((a, b) => {
-      return new Date(b.createdAt) - new Date(a.createdAt);
+      return new Date(a.createdAt) - new Date(b.createdAt);
     });
     res.status(200).json({
       success: true,

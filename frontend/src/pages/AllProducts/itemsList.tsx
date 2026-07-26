@@ -10,6 +10,7 @@ const ItemsList = ({ currentItems, type, column }: any) => {
   console.log(column);
   const [ getData, setGetData ] = useState(currentItems || []);
   const [ loading, setLoading ] = useState(false);
+    const [open, setOpen] = useState(false);
 
   useEffect(() => {
     setLoading(true);
@@ -31,13 +32,17 @@ const ItemsList = ({ currentItems, type, column }: any) => {
     }
   };
 
+  const toggleDrawer = (newOpen: boolean) => () => {
+    setOpen(newOpen);
+  };
+
   return (
     <Grid container className="banner-content w-100" columns={{ xs: 10, sm: 12, md: 12, lg: 10 }} justifyContent={`${type === "category" ? "start" : "start"}`}>
       {type === "category" && getData && getData.map((item: any, i: any) => {
         return <Grid size={{ xs:10, sm: 4, md: 2, lg: 2 }} key={i} className="">
             {type === "category" && (
               <div className="allCateSec" onClick={() => handleClick(item._id, "category")}>
-                <Img src={silkthreadbangle} alt="cateImage" className="sizeh200px" />
+                <Img src={!item.catImg.includes("blob") ? item.catImg : silkthreadbangle} alt="cateImage" className="sizeh200px" />
                 <H3 smFt className="text-center">{item.catName}</H3>
                 {item.catDec !== "" && <P>{item.catDec}</P>}
               </div>
@@ -57,13 +62,19 @@ const ItemsList = ({ currentItems, type, column }: any) => {
                   <div className="p-3">
                     <H3 smFt className="mt-0">{item.pdtName}</H3>
                     <P clrgrn className="mt-0 mb-2">{"₹" + item.pdtPrice}</P>
-                    <CartList />
+                    <a className="button button-dark w-100 d-inline-block text-center" onClick={() => setOpen(true)}>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" className="bi bi-cart me-2 align-text-bottom" viewBox="0 0 16 16">
+                        <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5M3.102 4l1.313 7h8.17l1.313-7zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4m7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4m-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2m7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2"/>
+                        </svg>
+                        Add To Cart
+                    </a>
                   </div>
               </div>
             </Grid>
           }))
         )
       )}
+      <CartList open={open} toggleDrawer={toggleDrawer} />
     </Grid>
   );
 };

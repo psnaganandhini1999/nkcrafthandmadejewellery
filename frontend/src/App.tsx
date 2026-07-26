@@ -1,10 +1,21 @@
-import './App.css';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+// import './App.css';
 import RouterFile from './routes';
 
 function App() {
   return (
     <div className="App">
       <RouterFile />
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        closeOnClick
+        pauseOnHover
+        draggable
+        theme="light"
+      />
       {/* <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>

@@ -6,6 +6,7 @@ import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { API, DOMAIN } from "../../helper/helper";
+import { showSuccess } from "../../utils/toast";
 
 const initialContactData = {
     email: "",
@@ -60,16 +61,16 @@ function Login() {
             try {
                 const { data } = await axios.post(DOMAIN + API.LOGIN, form_data);
                 if (data) {
-                    setFormLoading(false)
-                    setFormData(initialContactData)
-                    console.log(data);
-                    setSuccessMsgCtn(data?.message);
-                    localStorage.setItem('token', data.token);
-                    localStorage.setItem('user', JSON.stringify(data?.user));
                     setTimeout(() => {
-                        setSuccessMsgCtn("");
+                        setFormLoading(false);
+                    }, 1050);
+                    setTimeout(() => {
+                        showSuccess(data?.message);
+                        setFormData(initialContactData)
+                        localStorage.setItem('token', data.token);
+                        localStorage.setItem('user', JSON.stringify(data?.user));
                         navigate("/");
-                    }, 1500);
+                    }, 1000);
                 }
             } catch (err: any) {
                 // console.error("Error in sending message:", err);
