@@ -22,8 +22,8 @@ function FooterMain() {
                     <div className="footerSec text-center">
                         <H3 smFt clrWht>
                             For More details <br/> 
-                            NK Crafts, 6379313276 <br/>
-                            Contact: nagaown2606@gmail.com
+                            NK Crafts, <a href="tel:+916379313276" className="text-white">+91 6379313276</a> <br/>
+                            Contact: <a href="mailto:nagaown2606@gmail.com" className="text-white">nagaown2606@gmail.com</a>
                         </H3>
                     </div>
                 </Grid>

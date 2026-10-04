@@ -4,7 +4,7 @@ const multer = require('multer');
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const cloudinary = require('cloudinary').v2;
 const path = require('path');
-// const { protect } = require('../middleware/authMiddleware');
+// const { protect } = require('../middleware/auth.middleware');
 
 // Configure Cloudinary
 cloudinary.config({
@@ -34,31 +34,24 @@ const upload = multer({
 // @desc    Get signed upload parameters for Cloudinary direct upload
 // @access  Private
 
-router.post('/', upload.any(), (req, res, next) => {
-    // console.log(process.env.CLOUD_NAME, process.env.CLOUD_API_KEY, process.env.CLOUD_API_SECRET);
-    try {
-        if (!req.files || !req.files.length === 0) {
-            return res.status(400).json({
-                success: false,
-                message: "No images uploaded"
-            })
-        }
-        const images = req.files.map((file) => ({
-            url: file.path,
-            public_id: file.filename,
-            fieldname: file.fieldname
-        }))
-        res.status(200).json({
-            success: true,
-            message: "Images uploaded successfully.",
-            images
-        })
-    } catch (err) {
-        res.status(500).json({
-            success: false,
-            message: err.message
-        })
-    }
-});
-
-module.exports = router;
+module.exports = {
+    uploadFile: function (req, res, next) {
+        upload.any()(req, res, function (err) {
+            if (err instanceof multer.MulterError) {
+                // A Multer error occurred when uploading.
+                return res.status(400).json({
+                    success: false,
+                    message: err.message
+                });
+            } else if (err) {
+                // An unknown error occurred when uploading.
+                return res.status(500).json({
+                    success: false,
+                    message: err.message
+                });
+            }
+            // Everything went fine.
+            next();
+        });
+    },
+}

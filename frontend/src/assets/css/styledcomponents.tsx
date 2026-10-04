@@ -148,6 +148,11 @@ export const H5 = styled.h5<H5Inter>`
   `}
   ${(props: H5Inter) => props.smFt &&
     `font-size: 18px;
+    span {
+      color: ${brown};
+      font-weight: 800;
+      font-size: 16px;
+    }
   `}
   ${(props: H5Inter) => props.smFt1 &&
     `font-size: 16px;
@@ -712,6 +717,28 @@ export const HeaderMainSec = styled.div`
             }
           }
         }
+      }
+    }
+    .searchInputSec {
+      position: relative;
+      input {
+        border: 1px solid #d7d7d7;
+        padding: 5px 10px 5px 35px;
+        &:focus-visible {
+          outline: none !important;
+        }
+      }
+      img {
+        position: absolute;
+        left: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+      }
+      svg {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
       }
     }
 `;

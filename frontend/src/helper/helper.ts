@@ -20,7 +20,8 @@ export const API = {
     UPDATE_CUSTOMER_BY_ID: "user/update",
     GET_ALL_ORDER: "order/all",
     ADD_TO_CART: "cart/add",
-    GET_ALL_CART: "cart/all"
+    GET_ALL_CART: "cart/all",
+    REMOVE_CART: "cart/remove"
 }
 
 export const ADMIN_API = {

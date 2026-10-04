@@ -35,25 +35,31 @@ function AllProducts() {
 
     const fetchGetAllProducts = async (params: any) => {
         const token = localStorage.getItem('token');
+        const queryData = Number(queryParams?.get("type")) ? queryParams?.get("type") : params.search;
+        const paramsData = {
+            search: queryData,
+            status: params.status || ""
+        }
         const { data } = await axios.get(DOMAIN + API.GET_ALL_PRODUCT, {
-            params,
+            params: paramsData,
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             }
         });
-        if (data?.products !== "[]" || data?.products !== undefined) {
+        if (data?.data !== "[]" || data?.data !== undefined) {
             const [categoryResponse] =
             await Promise.all([
                 getAllCategories(params),
             ]);
 
-            const products = data?.products;
-            const catId = queryParams?.get("type");
-            const categories = categoryResponse.filter((cat: any) => cat._id === catId);
-            setAllCategories(categoryResponse);
-            const pdtData = products.filter((pdt: any) => pdt?.category === categories[0]._id);
-            console.log(pdtData, categories, "catData",products, categoryResponse, queryParams.get("type"));
+            const products = data?.data;
+            // const catId = queryParams?.get("type");
+            // const categories = categoryResponse.filter((cat: any) => cat._id === catId);
+            // setAllCategories(categoryResponse);
+            console.log("catData",queryParams?.get("type"));
+            const pdtData = products.filter((pdt: any) => pdt?.category === queryParams?.get("type"));
+            console.log(pdtData, "catData",products, queryData);
             setProductsList(pdtData);
         } else {
             setProductsList([]);
@@ -119,9 +125,9 @@ function AllProducts() {
                                         </h2>
                                         <div id="panelsStayOpen-collapseOne" className="accordion-collapse collapse show">
                                             <div className="accordion-body pt-0">
-                                                {allCategories && allCategories.map((item: any, i: any) => {
-                                                    return <div className="" onClick={() => handleClick(item.path, "category")} key={i}>
-                                                        <H3 smFt1>{item.catName}</H3>
+                                                {productsList && productsList.map((item: any, i: any) => {
+                                                    return <div className="" onClick={() => handleClick(item?.category?.path, "category")} key={i}>
+                                                        <H3 smFt1>{item.category?.catName}</H3>
                                                     </div>
                                                 })}
                                             </div>
